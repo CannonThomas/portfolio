@@ -2,7 +2,11 @@
 
 A learning-first Python laboratory for understanding how agents choose paths.
 V1 implements A* from scratch, with uniform-cost search as an optimal-cost baseline.
-A local Tkinter playground visualizes the engine's recorded expansion order.
+A browser playground and a local Tkinter app visualize the same engine.
+
+Live portfolio: https://cannonthomas.github.io/ai-search-decision-engine/
+
+Live demo: https://cannonthomas.github.io/ai-search-decision-engine/lab/
 
 ## Run
 
@@ -55,13 +59,17 @@ python -m unittest discover -s tests -v
 
 Choose File → Add Local Repository and select this folder. Then use Publish
 repository to choose visibility and publish through your signed-in account.
-No remote repository is created by the local build.
+The repository is published at https://github.com/CannonThomas/ai-search-decision-engine.
 
 ## Current limits
 
-This release is local desktop software. Playback shows expansions and the final
+The browser demo loads Pyodide 314.0.6 from jsDelivr (internet required on first load).
+Python executes in a Web Worker on the visitor’s device. GitHub Pages serves static
+files only; no local machine or application server must remain running.
+
+Playback shows expansions and the final
 path; it does not yet display the live frontier or per-cell g/h/f scores. BFS, DFS,
-Greedy Best-First, reinforcement learning, and a hosted web UI are future work.
+Greedy Best-First, and reinforcement learning are future work.
 The UI uses a fixed 26 × 16 map. There are no paid services or account requirements.
 
 ## Honest interview description today
@@ -71,3 +79,20 @@ The UI uses a fixed 26 × 16 map. There are no paid services or account requirem
 
 Extend that claim as you complete later milestones, and be ready to explain the
 heuristic, stale queue entries, weighted terrain, and testing strategy.
+
+## Website publishing
+
+Push to main to run correctness checks and deploy the portfolio and demo through
+GitHub Actions. Only staged website files and the engine are published as web assets.
+Local desktop development still uses `python app.py`.
+
+To preview the website locally:
+
+```sh
+python scripts/build_site.py
+python -m http.server 8000 --directory dist
+```
+
+Open http://localhost:8000. Edit `portfolio.html` for your project page; browser
+UI files live in `web/`. Python logic stays in `engine/search.py` and is copied
+automatically during publishing, so there is no separate algorithm to maintain.

@@ -6,10 +6,45 @@ from engine.search import Grid, search
 BG="#101820"; PANEL="#172630"; TEXT="#e6edf2"; MUTED="#9cafbb"
 COLORS={"open":"#243640", "wall":"#070d12", "weight":"#806332", "visited":"#285a75", "path":"#f5c76a", "start":"#54d5b0", "goal":"#ff887d"}
 
+def configure_controls(root):
+    # Clam honors color styling on macOS; Aqua draws native white controls.
+    style = ttk.Style(root)
+    style.theme_use("clam")
+    style.configure("TButton", background=PANEL, foreground=TEXT,
+                    bordercolor="#314550", lightcolor=PANEL, darkcolor=PANEL,
+                    relief="flat", borderwidth=1, padding=(16, 11),
+                    font=("Helvetica", 12), focusthickness=2, focuscolor="#54d5b0")
+    style.map("TButton", background=[("pressed", "#304b58"), ("active", "#243b47")],
+              bordercolor=[("focus", "#54d5b0"), ("active", "#507180")])
+    style.configure("Run.TButton", background="#54d5b0", foreground=BG,
+                    bordercolor="#54d5b0", lightcolor="#54d5b0", darkcolor="#54d5b0",
+                    font=("Helvetica", 12, "bold"), focuscolor=BG)
+    style.map("Run.TButton", background=[("pressed", "#36b894"), ("active", "#79e5c5")],
+              bordercolor=[("focus", TEXT), ("active", "#79e5c5")])
+    style.configure("TCombobox", fieldbackground=PANEL, background=PANEL,
+                    foreground=TEXT, arrowcolor="#54d5b0", bordercolor="#314550",
+                    lightcolor=PANEL, darkcolor=PANEL, padding=(10, 9), arrowsize=14)
+    style.map("TCombobox", fieldbackground=[("readonly", PANEL)],
+              foreground=[("readonly", TEXT)], selectbackground=[("readonly", PANEL)],
+              selectforeground=[("readonly", TEXT)],
+              background=[("active", "#243b47")],
+              bordercolor=[("focus", "#54d5b0")])
+    style.configure("Horizontal.TScale", background="#54d5b0", troughcolor=PANEL,
+                    bordercolor=BG, lightcolor="#54d5b0", darkcolor="#54d5b0",
+                    sliderlength=18, sliderthickness=12, borderwidth=0)
+    style.map("Horizontal.TScale", background=[("active", "#79e5c5")])
+    root.option_add("*TCombobox*Listbox.background", PANEL)
+    root.option_add("*TCombobox*Listbox.foreground", TEXT)
+    root.option_add("*TCombobox*Listbox.selectBackground", "#285a75")
+    root.option_add("*TCombobox*Listbox.selectForeground", TEXT)
+    root.option_add("*TCombobox*Listbox.font", "Helvetica 12")
+
+
 class App:
     def __init__(self, root):
         self.root=root; root.title("Search Lab · AI Search & Decision Engine")
-        root.configure(bg=BG); root.minsize(920,680)
+        root.configure(bg=BG); root.minsize(1040,740)
+        configure_controls(root)
         self.grid=Grid(26,16); self.start=(2,8); self.goal=(23,8)
         self.visited=set(); self.path=set(); self.results={}; self.queue=[]; self.index=0
         self.playing=False; self.job=None; self.cell=27
@@ -20,11 +55,11 @@ class App:
         tk.Label(root,text="V1 / Classical search     •     Four-way movement     •     Python engine",fg=MUTED,bg=BG).pack(anchor="w",padx=26,pady=(5,18))
         bar=tk.Frame(root,bg=BG); bar.pack(fill="x",padx=26)
         for label,command in [("Run",self.run),("Pause / Resume",self.toggle),("Step",self.step),("Compare",self.compare),("Reset map",self.reset)]:
-            ttk.Button(bar,text=label,command=command).pack(side="left",padx=(0,7))
-        ttk.Combobox(bar,textvariable=self.algorithm,values=["A*","Uniform-cost"],state="readonly",width=14).pack(side="left")
+            ttk.Button(bar,text=label,command=command,style="Run.TButton" if label=="Run" else "TButton",cursor="hand2").pack(side="left",padx=(0,7))
+        ttk.Combobox(bar,textvariable=self.algorithm,values=["A*","Uniform-cost"],state="readonly",width=14,font=("Helvetica",12)).pack(side="left")
         edit=tk.Frame(root,bg=BG); edit.pack(fill="x",padx=26,pady=12)
         tk.Label(edit,text="Paint:",fg=TEXT,bg=BG).pack(side="left")
-        ttk.Combobox(edit,textvariable=self.tool,values=["Wall","Erase","Cost 5","Start","Goal"],state="readonly",width=12).pack(side="left",padx=8)
+        ttk.Combobox(edit,textvariable=self.tool,values=["Wall","Erase","Cost 5","Start","Goal"],state="readonly",width=12,font=("Helvetica",12)).pack(side="left",padx=8)
         tk.Label(edit,text="Delay (ms)",fg=MUTED,bg=BG).pack(side="left",padx=10)
         ttk.Scale(edit,from_=1,to=150,variable=self.speed).pack(side="left")
         tk.Label(edit,text="Click or drag to edit. Compare uses the same map.",fg=MUTED,bg=BG).pack(side="left",padx=16)

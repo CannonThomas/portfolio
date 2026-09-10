@@ -3,39 +3,39 @@ import tkinter as tk
 from tkinter import ttk
 from engine.search import Grid, search
 
-BG="#101820"; PANEL="#172630"; TEXT="#e6edf2"; MUTED="#9cafbb"
-COLORS={"open":"#243640", "wall":"#070d12", "weight":"#806332", "visited":"#285a75", "path":"#f5c76a", "start":"#54d5b0", "goal":"#ff887d"}
+BG="#f2f4f8"; PANEL="#e5eaf2"; TEXT="#203049"; MUTED="#52647b"
+COLORS={"open":"#ffffff", "wall":"#7c8ca1", "weight":"#edd59d", "visited":"#a7cef1", "path":"#f5c66d", "start":"#397ee8", "goal":"#e89796"}
 
 def configure_controls(root):
     # Clam honors color styling on macOS; Aqua draws native white controls.
     style = ttk.Style(root)
     style.theme_use("clam")
     style.configure("TButton", background=PANEL, foreground=TEXT,
-                    bordercolor="#314550", lightcolor=PANEL, darkcolor=PANEL,
+                    bordercolor="#ccd5e2", lightcolor=PANEL, darkcolor=PANEL,
                     relief="flat", borderwidth=1, padding=(16, 11),
-                    font=("Helvetica", 12), focusthickness=2, focuscolor="#54d5b0")
-    style.map("TButton", background=[("pressed", "#304b58"), ("active", "#243b47")],
-              bordercolor=[("focus", "#54d5b0"), ("active", "#507180")])
-    style.configure("Run.TButton", background="#54d5b0", foreground=BG,
-                    bordercolor="#54d5b0", lightcolor="#54d5b0", darkcolor="#54d5b0",
+                    font=("Helvetica", 12), focusthickness=2, focuscolor="#397ee8")
+    style.map("TButton", background=[("pressed", "#d5e1f2"), ("active", "#e3ebf7")],
+              bordercolor=[("focus", "#397ee8"), ("active", "#86a8d7")])
+    style.configure("Run.TButton", background="#397ee8", foreground="#ffffff",
+                    bordercolor="#397ee8", lightcolor="#397ee8", darkcolor="#397ee8",
                     font=("Helvetica", 12, "bold"), focuscolor=BG)
-    style.map("Run.TButton", background=[("pressed", "#36b894"), ("active", "#79e5c5")],
-              bordercolor=[("focus", TEXT), ("active", "#79e5c5")])
+    style.map("Run.TButton", background=[("pressed", "#2864c1"), ("active", "#5793ef")],
+              bordercolor=[("focus", TEXT), ("active", "#5793ef")])
     style.configure("TCombobox", fieldbackground=PANEL, background=PANEL,
-                    foreground=TEXT, arrowcolor="#54d5b0", bordercolor="#314550",
+                    foreground=TEXT, arrowcolor="#397ee8", bordercolor="#ccd5e2",
                     lightcolor=PANEL, darkcolor=PANEL, padding=(10, 9), arrowsize=14)
     style.map("TCombobox", fieldbackground=[("readonly", PANEL)],
               foreground=[("readonly", TEXT)], selectbackground=[("readonly", PANEL)],
               selectforeground=[("readonly", TEXT)],
-              background=[("active", "#243b47")],
-              bordercolor=[("focus", "#54d5b0")])
-    style.configure("Horizontal.TScale", background="#54d5b0", troughcolor=PANEL,
-                    bordercolor=BG, lightcolor="#54d5b0", darkcolor="#54d5b0",
+              background=[("active", "#e3ebf7")],
+              bordercolor=[("focus", "#397ee8")])
+    style.configure("Horizontal.TScale", background="#397ee8", troughcolor=PANEL,
+                    bordercolor=BG, lightcolor="#397ee8", darkcolor="#397ee8",
                     sliderlength=18, sliderthickness=12, borderwidth=0)
-    style.map("Horizontal.TScale", background=[("active", "#79e5c5")])
+    style.map("Horizontal.TScale", background=[("active", "#5793ef")])
     root.option_add("*TCombobox*Listbox.background", PANEL)
     root.option_add("*TCombobox*Listbox.foreground", TEXT)
-    root.option_add("*TCombobox*Listbox.selectBackground", "#285a75")
+    root.option_add("*TCombobox*Listbox.selectBackground", "#a7cef1")
     root.option_add("*TCombobox*Listbox.selectForeground", TEXT)
     root.option_add("*TCombobox*Listbox.font", "Helvetica 12")
 
@@ -50,7 +50,7 @@ class App:
         self.playing=False; self.job=None; self.cell=27
         self.tool=tk.StringVar(value="Wall"); self.algorithm=tk.StringVar(value="A*")
         self.speed=tk.IntVar(value=25)
-        tk.Label(root,text="SEARCH LAB",font=("Helvetica",12,"bold"),fg="#54d5b0",bg=BG).pack(anchor="w",padx=26,pady=(22,4))
+        tk.Label(root,text="SEARCH LAB",font=("Helvetica",12,"bold"),fg="#397ee8",bg=BG).pack(anchor="w",padx=26,pady=(22,4))
         tk.Label(root,text="Watch a decision take shape.",font=("Helvetica",25,"bold"),fg=TEXT,bg=BG).pack(anchor="w",padx=26)
         tk.Label(root,text="V1 / Classical search     •     Four-way movement     •     Python engine",fg=MUTED,bg=BG).pack(anchor="w",padx=26,pady=(5,18))
         bar=tk.Frame(root,bg=BG); bar.pack(fill="x",padx=26)
@@ -104,7 +104,7 @@ class App:
                 if c==self.goal: kind="goal"
                 self.canvas.create_rectangle(x*s+1,y*s+1,(x+1)*s-1,(y+1)*s-1,fill=COLORS[kind],outline="")
                 label="S" if c==self.start else "G" if c==self.goal else "5" if c in self.grid.weights else ""
-                if label: self.canvas.create_text((x+.5)*s,(y+.5)*s,text=label,fill=BG if kind in ("start","goal","path") else TEXT,font=("Helvetica",10,"bold"))
+                if label: self.canvas.create_text((x+.5)*s,(y+.5)*s,text=label,fill="#ffffff" if kind=="start" else TEXT,font=("Helvetica",10,"bold"))
 
     def paint(self,event):
         c=(int(event.x/self.cell),int(event.y/self.cell))

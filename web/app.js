@@ -19,20 +19,30 @@ $('grid').addEventListener('keydown',e=>{const b=e.target,i=cells.indexOf(b);if(
 function metrics(r){const v=document.querySelectorAll('.metrics strong');v[0].textContent=r.expanded.length;v[1].textContent=r.cost??'No route';v[2].textContent=r.elapsed_ms.toFixed(2)+' ms';}
 function advance(){if(!result)return;if(index<result.expanded.length)visited.add(key(result.expanded[index++]));$('status').textContent=`${index} / ${result.expanded.length} states explored`;if(index===result.expanded.length){pause();path=new Set(result.path.map(key));metrics(result);$('status').textContent=result.cost===null?'No path. Try erasing a wall.':'Path found.';}draw();controls();}
 function play(){if(!result||index>=result.expanded.length)return;$('pause').textContent='Pause';advance();if(index<result.expanded.length)timer=setTimeout(play,+$('speed').value);}
-const worker=new Worker('worker.js');
+let worker;
+function startWorker(){
+ if(worker)worker.terminate();
+ ready=false;busy=false;controls();
+ $('retry').hidden=true; $('status').textContent='Loading Python…';
+ worker=new Worker('worker.js?v=portfolio2', {type:'module'});
+ worker.onmessage=handleMessage;worker.onerror=handleError;
+}
+function handleError(){busy=false;ready=false;controls();$('retry').hidden=false;$('status').textContent='Python couldn’t load. Try again.';}
+$('retry').onclick=startWorker;
 function request(compare=false,next='run'){clear();draw();busy=true;mode=next;controls();$('status').textContent='Searching…';worker.postMessage({id:revision,walls:[...walls].map(k=>k.split(',').map(Number)),weights:[...weights].map(k=>k.split(',').map(Number)),start,goal,compare});}
-worker.onmessage=({data})=>{
+function handleMessage({data}){
  if(data.type==='ready'){ready=true;controls();$('status').textContent='Ready.';return;}
  if(data.id!==undefined&&data.id!==revision)return;
- if(data.type==='error'){busy=false;$('status').textContent='Couldn’t load Python. Check your connection and reload.';controls();return;}
+ if(data.type==='error'){console.error(data.message);handleError();return;}
  busy=false;result=data.results[0];controls();
  if(data.compare){visited=new Set(result.expanded.map(key));path=new Set(result.path.map(key));index=result.expanded.length;metrics(result);draw();const table=document.createElement('table');table.innerHTML='<thead><tr><th>Algorithm</th><th>Expanded</th><th>Cost</th><th>Time</th></tr></thead>';const body=document.createElement('tbody');for(const r of data.results){const row=document.createElement('tr');for(const value of [r.algorithm.toUpperCase(),r.expanded.length,r.cost??'No route',r.elapsed_ms.toFixed(2)+' ms']){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}body.append(row);}table.append(body);$('comparison').replaceChildren(table);$('status').textContent=result.cost===null?'No path with either algorithm.':result.cost===data.results[1].cost?'Same cost. Showing A*.':'Costs differ. Check this map.';controls();}
  else if(mode==='step')advance();else play();
 };
-worker.onerror=()=>{$('status').textContent='Python failed to load. Check your connection and reload.';busy=false;ready=false;controls();};
+
 $('run').onclick=()=>request();$('compare').onclick=()=>request(true);$('reset').onclick=reset;
 $('pause').onclick=()=>timer?pause():play();$('step').onclick=()=>{pause();if(!result)request(false,'step');else advance();};
 reset();
+startWorker();
 if(document.modelContext?.registerTool){
  const lifecycle=new AbortController();
  Promise.resolve(document.modelContext.registerTool({name:'reset_search_map',description:'Reset the visible search map to its example terrain and clear results.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false},execute(input){if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Expected an empty object');reset();return {status:'reset',start,goal,walls:walls.size};}},{signal:lifecycle.signal})).catch(()=>{});

@@ -1,12 +1,12 @@
-# AI Search & Decision Engine
+# Portfolio
 
 A learning-first Python laboratory for understanding how agents choose paths.
 V1 implements A* from scratch, with uniform-cost search as an optimal-cost baseline.
 A browser playground and a local Tkinter app visualize the same engine.
 
-Live portfolio: https://cannonthomas.github.io/ai-search-decision-engine/
+Live portfolio: https://cannonthomas.github.io/portfolio/
 
-Live demo: https://cannonthomas.github.io/ai-search-decision-engine/lab/
+Live demo: https://cannonthomas.github.io/portfolio/lab/
 
 ## Run
 
@@ -59,11 +59,11 @@ python -m unittest discover -s tests -v
 
 Choose File → Add Local Repository and select this folder. Then use Publish
 repository to choose visibility and publish through your signed-in account.
-The repository is published at https://github.com/CannonThomas/ai-search-decision-engine.
+The repository is published at https://github.com/CannonThomas/portfolio.
 
 ## Current limits
 
-The browser demo loads Pyodide 314.0.6 from jsDelivr (internet required on first load).
+Both demos load a pinned Pyodide 314.0.6 runtime served by this GitHub Pages site.
 Python executes in a Web Worker on the visitor’s device. GitHub Pages serves static
 files only; no local machine or application server must remain running.
 
@@ -96,3 +96,21 @@ python -m http.server 8000 --directory dist
 Open http://localhost:8000. Edit `portfolio.html` for your project page; browser
 UI files live in `web/`. Python logic stays in `engine/search.py` and is copied
 automatically during publishing, so there is no separate algorithm to maintain.
+
+## Queue Lab
+
+`engine/bfs.py` implements Node, generator-based expand, and BFS with queue snapshots.
+`bfs/` provides step/back/play controls, goal selection, and three graph presets.
+The goal is tested before expansion and is excluded from the expanded count.
+This differs from Search Lab’s documented queue-removal metric, which includes the goal.
+
+Website: https://cannonthomas.github.io/portfolio/bfs/
+
+## Runtime compatibility
+
+Pyodide 314 uses ES module workers. Both web workers must be constructed with
+`{type: "module"}` and import `runtime/pyodide.mjs`. Classic workers fail at startup.
+The pinned runtime assets and licenses live in `vendor/pyodide/`.
+
+Validation: 11 Python tests; browser checks for initialization, A*/UCS equality,
+step/pause, and BFS queue/parent transitions.

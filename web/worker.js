@@ -1,8 +1,9 @@
+import { loadPyodide } from '../runtime/pyodide.mjs';
 // A worker keeps Python loading and computation off the interface thread.
 let py;
 const ready = (async () => {
-  importScripts('https://cdn.jsdelivr.net/pyodide/v314.0.6/full/pyodide.js');
-  py = await loadPyodide();
+
+  py = await loadPyodide({indexURL: new URL('../runtime/', self.location.href).href});
   const response = await fetch('engine/search.py');
   if (!response.ok) throw new Error('Python source could not be loaded');
   py.runPython(await response.text());
@@ -18,7 +19,7 @@ def solve_request(raw):
 `);
   postMessage({type:'ready'});
 })();
-ready.catch(error => postMessage({type:'error', message:String(error)}));
+ready.catch(error => { console.error(error); postMessage({type:'error', message:String(error)}); });
 onmessage = async ({data}) => {
   try {
     await ready;

@@ -9,6 +9,8 @@ shutil.copytree(root / 'engine', out / 'lab' / 'engine', ignore=shutil.ignore_pa
 shutil.copytree(root / 'vendor' / 'pyodide', out / 'runtime')
 shutil.copytree(root / 'bfs', out / 'bfs')
 shutil.copy(root / 'engine' / 'bfs.py', out / 'bfs' / 'bfs.py')
+shutil.copytree(root / 'annealing', out / 'annealing')
+shutil.copy(root / 'engine' / 'annealing.py', out / 'annealing' / 'annealing.py')
 shutil.copy(root / 'portfolio.html', out / 'index.html')
 (out / '.nojekyll').touch()
 print('Website built in dist/')

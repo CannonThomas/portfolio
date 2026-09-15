@@ -114,3 +114,12 @@ The pinned runtime assets and licenses live in `vendor/pyodide/`.
 
 Validation: 11 Python tests; browser checks for initialization, A*/UCS equality,
 step/pause, and BFS queue/parent transitions.
+
+## Route Lab — simulated annealing
+
+Live: https://cannonthomas.github.io/portfolio/annealing/
+
+`engine/annealing.py` implements seeded 2-opt simulated annealing and hill climbing
+for a closed city tour. `annealing/` replays current/best routes, temperature,
+acceptance decisions, and cost histories. Adjust the seed, temperature, cooling
+schedule, and move budget. See `docs/annealing.md` for theory and experiments.

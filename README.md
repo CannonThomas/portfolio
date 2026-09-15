@@ -123,3 +123,12 @@ Live: https://cannonthomas.github.io/portfolio/annealing/
 for a closed city tour. `annealing/` replays current/best routes, temperature,
 acceptance decisions, and cost histories. Adjust the seed, temperature, cooling
 schedule, and move budget. See `docs/annealing.md` for theory and experiments.
+
+## Queens Lab — N-queens
+
+Live: https://cannonthomas.github.io/portfolio/queens/
+
+Play manually or replay the Python backtracking solver. `engine/queens.py` records
+placements, rejected squares, and removals. Choose 4, 8, or 10 queens, or the
+unsatisfiable 3-queen case. Manual play allows one queen per row and highlights
+attacking pairs; Solve starts fresh. The page includes beginner and technical guides.

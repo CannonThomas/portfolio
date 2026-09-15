@@ -11,3 +11,5 @@ a{color:inherit;text-decoration:none}button,select,input,a{-webkit-tap-highlight
 
 /* A quiet wash at the right edge of the portfolio. */
 body.portfolio{background-image:radial-gradient(ellipse at 110% 42%,rgba(148,151,236,.32) 0,rgba(170,190,243,.16) 32%,transparent 65%),linear-gradient(115deg,#f5f7fa,#edf1f8);}
+
+.beginner{margin:0 0 18px}.beginner>div{max-width:850px}.about ol{padding-left:20px;margin:12px 0}.about li{margin:8px 0;padding-left:4px}.about h3{font-size:13px;font-weight:650;color:var(--ink);margin:22px 0 6px}.about code{font-size:12px;background:#ffffff70;border-radius:5px;padding:2px 5px}.about p{line-height:1.65}
